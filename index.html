@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protector</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #1a237e;
+            font-family: Arial, sans-serif;
+        }
+
+        .protector-text {
+            color: white;
+            font-size: 4rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+        }
+
+        #open-manual {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #1a237e;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="protector-text">PROTECTOR</div>
+    <div class="loading-text" id="countdown">Opening PosterMyWall in 5 seconds...</div>
+    <button id="open-manual" onclick="openPosterMyWall()">Open PosterMyWall Now</button>
+
+    <script>
+        let count = 5;
+        const countdownElement = document.getElementById('countdown');
+        const manualButton = document.getElementById('open-manual');
+        
+        // Countdown timer
+        const countdown = setInterval(() => {
+            count--;
+            countdownElement.textContent = `Opening PosterMyWall in ${count} seconds...`;
+            
+            if (count <= 0) {
+                clearInterval(countdown);
+                openPosterMyWall();
+            }
+        }, 1000);
+
+        // Function to open the webapp
+        function openPosterMyWall() {
+            const newWindow = window.open(
+                'https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.postermywall.com/&ved=2ahUKEwjNt_KZirmNAxX0hP0HHTtWO84QFnoECAwQAQ&usg=AOvVaw2_PrG-Cserlr7mNEyo7Eft',
+                '_blank'
+            );
+            
+            // Show manual button if popup was blocked
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                manualButton.style.display = 'block';
+                countdownElement.textContent = "Popup was blocked - Click button below to open";
+            }
+        }
+    </script>
+</body>
+</html>
