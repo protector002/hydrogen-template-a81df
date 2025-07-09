@@ -1,81 +1,1141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protector</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #1a237e;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore the latest action movies on PROTECTOR Movie">
+  <title>PROTECTOR Movie 🍿 | Premium Action Films</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ffcc00;
+      --accent-color: #ff6b00;
+      --bg-dark: #1e1e2f;
+      --bg-darker: #121212;
+      --bg-gradient: linear-gradient(135deg, #1e1e2f, #121212, #2a0a3a);
+      --card-bg: #222;
+      --card-hover-bg: #2a2a2a;
+      --text-light: #fff;
+      --text-muted: #bbb;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --transition: all 0.3s ease;
+    }
 
-        .protector-text {
-            color: white;
-            font-size: 4rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        .loading-text {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
-        }
+    body {
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-        #open-manual {
-            display: none;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #fff;
-            color: #1a237e;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+    .loading-screen, .movie-screen {
+      display: none;
+    }
+
+    .active {
+      display: flex;
+    }
+
+    .loading-screen {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      background: var(--bg-gradient);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .loading-screen h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      animation: fadeIn 1s ease-in-out;
+      text-shadow: 0 2px 10px rgba(255, 204, 0, 0.3);
+    }
+
+    .loader {
+      border: 5px solid #444;
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .loader:after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top-color: var(--accent-color);
+      animation: spin 1.5s linear infinite;
+    }
+
+    .loading-screen p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Header Styles */
+    header {
+      background-color: rgba(30, 30, 47, 0.95);
+      padding: 1rem 2rem;
+      border-bottom: 2px solid var(--primary-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .nav-links a:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover:after {
+      width: 100%;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 0.5rem 1rem;
+      transition: var(--transition);
+      width: 300px;
+      max-width: 100%;
+    }
+
+    .search-container:focus-within {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .search-container input {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      padding: 0.5rem;
+      width: 100%;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search-container button {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .search-container button:hover {
+      color: var(--primary-color);
+    }
+
+    .mobile-menu {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 70vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(18, 18, 18, 0.9) 0%, rgba(18, 18, 18, 0.6) 50%, rgba(18, 18, 18, 0.2) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding: 0 2rem;
+    }
+
+    .hero h2 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: var(--text-light);
+      max-width: 500px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: var(--bg-darker);
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #ffd633;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-light);
+      border: 2px solid var(--text-light);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    /* Categories */
+    .categories {
+      padding: 0 2rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .category-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-light);
+      padding: 0.6rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .category-btn:hover, .category-btn.active {
+      background: var(--primary-color);
+      color: var(--bg-darker);
+    }
+
+    /* Main Content */
+    main {
+      padding: 0 1.5rem 3rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .movie-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+      background: var(--card-hover-bg);
+    }
+
+    .movie-card:hover .movie-info {
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      display: block;
+      transition: var(--transition);
+    }
+
+    .movie-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
+      transition: var(--transition);
+    }
+
+    .movie-card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+
+    .movie-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rating {
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .movie-card p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Movie Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--bg-dark);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.9);
+      transition: var(--transition);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: var(--bg-darker);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 10;
+      border: none;
+    }
+
+    .close-modal:hover {
+      transform: rotate(90deg);
+      background: #ffd633;
+    }
+
+    .modal-poster {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+
+    .modal-details {
+      padding: 2rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 2.2rem;
+      color: var(--primary-color);
+      margin-right: 1rem;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-meta div {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-description {
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .modal-cast {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .cast-member {
+      flex: 0 0 auto;
+      text-align: center;
+    }
+
+    .cast-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
+      border: 2px solid var(--primary-color);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-darker);
+      padding: 3rem 2rem 2rem;
+      border-top: 1px solid rgba(255, 204, 0, 0.2);
+      margin-top: 3rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-column h3 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-color);
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--primary-color);
+      color: var(--bg-darker);
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-darker);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffd633;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .hero {
+        height: 60vh;
+      }
+      
+      .hero h2 {
+        font-size: 2.8rem;
+      }
+      
+      .modal-content {
+        width: 95%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      .mobile-menu {
+        display: block;
+      }
+      
+      .search-container {
+        width: 100%;
+        margin-top: 1rem;
+        order: 3;
+      }
+      
+      .hero {
+        height: 50vh;
+      }
+      
+      .hero h2 {
+        font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .modal-details {
+        padding: 1.5rem;
+      }
+      
+      .modal-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .loading-screen h1 {
+        font-size: 2rem;
+      }
+      
+      .hero {
+        height: 40vh;
+      }
+      
+      .hero h2 {
+        font-size: 1.8rem;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .section-title {
+        font-size: 1.6rem;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Floating animation for hero elements */
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+  </style>
 </head>
 <body>
-    <div class="protector-text">PROTECTOR</div>
-    <div class="loading-text" id="countdown">Opening PosterMyWall in 5 seconds...</div>
-    <button id="open-manual" onclick="openPosterMyWall()">Open PosterMyWall Now</button>
+  <div class="loading-screen active" id="loadingScreen" aria-live="polite">
+    <h1>PROTECTOR Movie 🍿</h1>
+    <div class="loader" role="status" aria-label="Loading"></div>
+    <p>Loading our premium collection of action movies...</p>
+  </div>
 
-    <script>
-        let count = 5;
-        const countdownElement = document.getElementById('countdown');
-        const manualButton = document.getElementById('open-manual');
+  <div class="movie-screen" id="movieScreen">
+    <header>
+      <div class="logo">
+        <h1><i class="fas fa-film"></i> PROTECTOR</h1>
+      </div>
+      
+      <button class="mobile-menu" id="mobileMenu">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-fire"></i> New Releases</a></li>
+        <li><a href="#"><i class="fas fa-trophy"></i> Top Rated</a></li>
+        <li><a href="#"><i class="fas fa-bookmark"></i> My List</a></li>
+      </ul>
+      
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search movies...">
+        <button id="searchButton"><i class="fas fa-search"></i></button>
+      </div>
+    </header>
+    
+    <section class="hero">
+      <div class="hero-content floating">
+        <h2>Experience Ultimate Action</h2>
+        <p>Dive into the world of adrenaline-pumping movies with our premium collection of action-packed films.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary"><i class="fas fa-play"></i> Watch Now</a>
+          <a href="#" class="btn btn-outline"><i class="fas fa-plus"></i> My List</a>
+        </div>
+      </div>
+    </section>
+    
+    <div class="categories">
+      <h2 class="section-title"><i class="fas fa-list"></i> Categories</h2>
+      <div class="category-filters" id="categoryFilters">
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="action">Action</button>
+        <button class="category-btn" data-category="adventure">Adventure</button>
+        <button class="category-btn" data-category="sci-fi">Sci-Fi</button>
+        <button class="category-btn" data-category="thriller">Thriller</button>
+      </div>
+    </div>
+    
+    <main>
+      <section id="movie-container" class="grid" aria-label="Movie listings"></section>
+    </main>
+    
+    <footer>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>PROTECTOR Movie</h3>
+          <p>Your premium destination for the best action movies. Experience cinema like never before.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
         
-        // Countdown timer
-        const countdown = setInterval(() => {
-            count--;
-            countdownElement.textContent = `Opening PosterMyWall in ${count} seconds...`;
-            
-            if (count <= 0) {
-                clearInterval(countdown);
-                openPosterMyWall();
-            }
-        }, 1000);
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> New Releases</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Top Rated</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> My List</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Support</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Genres</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Action</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Adventure</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Sci-Fi</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Thriller</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Drama</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Contact Us</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-envelope"></i> support@protectormovie.com</a></li>
+            <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Hollywood, CA 90028, USA</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        <p>&copy; 2025 PROTECTOR Movie. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- Movie Modal -->
+  <div class="modal" id="movieModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal"><i class="fas fa-times"></i></button>
+      <img id="modalPoster" class="modal-poster" src="" alt="">
+      <div class="modal-details">
+        <div class="modal-header">
+          <h2 id="modalTitle" class="modal-title"></h2>
+          <div class="rating">
+            <i class="fas fa-star"></i>
+            <span id="modalRating"></span>/10
+          </div>
+        </div>
+        
+        <div class="modal-meta">
+          <div><i class="fas fa-calendar-alt"></i> <span id="modalYear"></span></div>
+          <div><i class="fas fa-clock"></i> <span id="modalDuration"></span></div>
+          <div><i class="fas fa-tag"></i> <span id="modalGenre"></span></div>
+        </div>
+        
+        <p id="modalDescription" class="modal-description"></p>
+        
+        <h3>Cast</h3>
+        <div class="modal-cast" id="modalCast"></div>
+        
+        <div class="hero-buttons" style="margin-top: 2rem;">
+          <a href="#" class="btn btn-primary"><i class="fas fa-play"></i> Watch Now</a>
+          <a href="#" class="btn btn-outline"><i class="fas fa-plus"></i> Add to List</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Function to open the webapp
-        function openPosterMyWall() {
-            const newWindow = window.open(
-                'https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.postermywall.com/&ved=2ahUKEwjNt_KZirmNAxX0hP0HHTtWO84QFnoECAwQAQ&usg=AOvVaw2_PrG-Cserlr7mNEyo7Eft',
-                '_blank'
-            );
-            
-            // Show manual button if popup was blocked
-            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                manualButton.style.display = 'block';
-                countdownElement.textContent = "Popup was blocked - Click button below to open";
-            }
+  <script type="module">
+    const movies = [
+      {
+        id: 1,
+        title: "The Dark Hero",
+        description: "A vigilante rises to protect his city from a dangerous crime syndicate that has taken control of the streets. With advanced combat skills and high-tech gadgets, he becomes the symbol of hope the city desperately needs.",
+        year: "2024",
+        duration: "2h 15m",
+        genre: "Action, Thriller",
+        rating: "8.2",
+        poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "The Dark Hero movie poster",
+        category: "action"
+      },
+      {
+        id: 2,
+        title: "Galaxy Guardians",
+        description: "A team of misfits must band together to protect the galaxy from an ancient cosmic threat that could destroy all life as we know it. Epic space battles and stunning visuals make this a must-see adventure.",
+        year: "2023",
+        duration: "2h 28m",
+        genre: "Sci-Fi, Adventure",
+        rating: "8.7",
+        poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "Galaxy Guardians movie poster",
+        category: "sci-fi"
+      },
+      {
+        id: 3,
+        title: "Mystery Island",
+        description: "A group of explorers stranded on a mysterious island must uncover its secrets to survive. Ancient ruins, hidden treasures, and dangerous creatures await in this thrilling adventure.",
+        year: "2024",
+        duration: "1h 58m",
+        genre: "Adventure, Mystery",
+        rating: "7.9",
+        poster: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "Mystery Island movie poster",
+        category: "adventure"
+      },
+      {
+        id: 4,
+        title: "Midnight Run",
+        description: "A former special forces operative is forced out of retirement for one last mission. With time running out, he must navigate the criminal underworld to save his kidnapped daughter.",
+        year: "2023",
+        duration: "2h 5m",
+        genre: "Action, Thriller",
+        rating: "7.8",
+        poster: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "Midnight Run movie poster",
+        category: "action"
+      },
+      {
+        id: 5,
+        title: "Quantum Paradox",
+        description: "When a scientific experiment goes wrong, a physicist finds herself trapped between parallel dimensions. She must solve the quantum paradox to return home before reality collapses.",
+        year: "2024",
+        duration: "2h 12m",
+        genre: "Sci-Fi, Thriller",
+        rating: "8.4",
+        poster: "https://images.unsplash.com/photo-1535666669445-e8c15cd2e7d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "Quantum Paradox movie poster",
+        category: "sci-fi"
+      },
+      {
+        id: 6,
+        title: "Arctic Frontier",
+        description: "A team of researchers in the Arctic discovers an ancient creature frozen in ice. When it awakens, they must survive both the harsh environment and the prehistoric predator.",
+        year: "2023",
+        duration: "1h 52m",
+        genre: "Adventure, Thriller",
+        rating: "7.5",
+        poster: "https://images.unsplash.com/photo-1543536448-d209d2d13a1c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        alt: "Arctic Frontier movie poster",
+        category: "thriller"
+      }
+    ];
+
+    const castMembers = [
+      { name: "Chris Valor", character: "John Matrix", img: "https://randomuser.me/api/portraits/men/32.jpg" },
+      { name: "Alexa Thunder", character: "Sarah Connor", img: "https://randomuser.me/api/portraits/women/44.jpg" },
+      { name: "Marcus Steel", character: "Commander Rex", img: "https://randomuser.me/api/portraits/men/22.jpg" },
+      { name: "Sophia Blaze", character: "Dr. Elena Reed", img: "https://randomuser.me/api/portraits/women/68.jpg" },
+      { name: "Tyler Rush", character: "Agent Kane", img: "https://randomuser.me/api/portraits/men/75.jpg" }
+    ];
+
+    const loadingScreen = document.getElementById('loadingScreen');
+    const movieScreen = document.getElementById('movieScreen');
+    const movieContainer = document.getElementById('movie-container');
+    const movieModal = document.getElementById('movieModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPoster = document.getElementById('modalPoster');
+    const modalRating = document.getElementById('modalRating');
+    const modalYear = document.getElementById('modalYear');
+    const modalDuration = document.getElementById('modalDuration');
+    const modalGenre = document.getElementById('modalGenre');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalCast = document.getElementById('modalCast');
+    const closeModal = document.getElementById('closeModal');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const categoryFilters = document.getElementById('categoryFilters');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const navLinks = document.getElementById('navLinks');
+
+    // Initialize the app
+    function init() {
+      showMovies(movies);
+      setupEventListeners();
+    }
+
+    // Render movies to the grid
+    function showMovies(movieList) {
+      movieContainer.innerHTML = movieList.map(movie => `
+        <article class="movie-card" role="article" data-id="${movie.id}" data-category="${movie.category}">
+          <img src="${movie.poster}" alt="${movie.alt}" loading="lazy" class="movie-poster">
+          <div class="movie-info">
+            <div class="movie-meta">
+              <span>${movie.year}</span>
+              <span class="rating"><i class="fas fa-star"></i> ${movie.rating}</span>
+            </div>
+            <h3>${movie.title}</h3>
+            <p>${movie.description}</p>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // Open movie modal
+    function openMovieModal(movieId) {
+      const movie = movies.find(m => m.id === movieId);
+      if (movie) {
+        modalTitle.textContent = movie.title;
+        modalPoster.src = movie.poster;
+        modalPoster.alt = movie.alt;
+        modalRating.textContent = movie.rating;
+        modalYear.textContent = movie.year;
+        modalDuration.textContent = movie.duration;
+        modalGenre.textContent = movie.genre;
+        modalDescription.textContent = movie.description;
+        
+        // Generate cast members
+        modalCast.innerHTML = castMembers.map(member => `
+          <div class="cast-member">
+            <img src="${member.img}" alt="${member.name}" class="cast-img">
+            <div>
+              <strong>${member.name}</strong>
+              <div>${member.character}</div>
+            </div>
+          </div>
+        `).join('');
+        
+        movieModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // Close modal
+    function closeMovieModal() {
+      movieModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Filter movies by category
+    function filterMovies(category) {
+      if (category === 'all') {
+        showMovies(movies);
+        return;
+      }
+      
+      const filteredMovies = movies.filter(movie => movie.category === category);
+      showMovies(filteredMovies);
+    }
+
+    // Search movies
+    function searchMovies(query) {
+      if (!query.trim()) {
+        showMovies(movies);
+        return;
+      }
+      
+      const searchTerm = query.toLowerCase();
+      const results = movies.filter(movie => 
+        movie.title.toLowerCase().includes(searchTerm) || 
+        movie.description.toLowerCase().includes(searchTerm) ||
+        movie.genre.toLowerCase().includes(searchTerm)
+      );
+      
+      showMovies(results);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Movie card click
+      movieContainer.addEventListener('click', (e) => {
+        const movieCard = e.target.closest('.movie-card');
+        if (movieCard) {
+          const movieId = parseInt(movieCard.dataset.id);
+          openMovieModal(movieId);
         }
-    </script>
+      });
+      
+      // Close modal
+      closeModal.addEventListener('click', closeMovieModal);
+      
+      // Click outside modal to close
+      movieModal.addEventListener('click', (e) => {
+        if (e.target === movieModal) {
+          closeMovieModal();
+        }
+      });
+      
+      // Search functionality
+      searchButton.addEventListener('click', () => searchMovies(searchInput.value));
+      searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          searchMovies(searchInput.value);
+        }
+      });
+      
+      // Category filtering
+      categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active button
+          categoryButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Filter movies
+          filterMovies(button.dataset.category);
+        });
+      });
+      
+      // Mobile menu toggle
+      mobileMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+
+    // Handle loading screen
+    function handleLoading() {
+      setTimeout(() => {
+        loadingScreen.classList.remove('active');
+        loadingScreen.setAttribute('aria-hidden', 'true');
+        movieScreen.classList.add('active');
+        movieScreen.setAttribute('aria-hidden', 'false');
+        init();
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', handleLoading);
+  </script>
 </body>
 </html>
